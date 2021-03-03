@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"strings"
 	"unicode"
 )
@@ -59,4 +60,20 @@ func main() {
 	simnum(word)         // 1 word
 	addnum()             // 27*(2^n+1) words
 	//fmt.Println(len(arr)) // 28*(2^n + 1) words
+	file, err := os.Create(word + ".txt")
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	wfile, err := os.OpenFile(word+".txt", os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		panic(err)
+	}
+
+	for i := range arr {
+		if _, err := wfile.WriteString(arr[i] + "\n"); err != nil {
+			panic(err)
+		}
+	}
 }
