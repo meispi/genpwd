@@ -57,24 +57,29 @@ func main() {
 	word := flag.String("w", "", "Enter your word")
 	flag.Parse()
 
-	permute(0, *word, "") // 2^n words
-	simnum(*word)         // 1 word
-	addnum()             // 27*(2^n+1) words
+	if *word != "" {
+		permute(0, *word, "") // 2^n words
+		simnum(*word)         // 1 word
+		addnum()             // 27*(2^n+1) words
 
-	file, err := os.Create(*word + ".txt")
-	if err != nil {
-		panic(err)
-	}
-	defer file.Close()
-
-	wfile, err := os.OpenFile(*word+".txt", os.O_APPEND|os.O_WRONLY, 0644)
-	if err != nil {
-		panic(err)
-	}
-
-	for i := range arr {
-		if _, err := wfile.WriteString(arr[i] + "\n"); err != nil {
+		file, err := os.Create(*word + ".txt")
+		if err != nil {
 			panic(err)
 		}
+		defer file.Close()
+
+		wfile, err := os.OpenFile(*word+".txt", os.O_APPEND|os.O_WRONLY, 0644)
+		if err != nil {
+			panic(err)
+		}
+
+		for i := range arr {
+			if _, err := wfile.WriteString(arr[i] + "\n"); err != nil {
+				panic(err)
+			}
+		}
+	} else {
+		flag.Usage()
 	}
+	
 }
