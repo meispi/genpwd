@@ -54,7 +54,7 @@ func addnum() {
 }
 
 func main() {
-	word := flag.String("w", "", "word (required)")
+	word := flag.String("w", "", "word")
 	flag.Parse()
 
 	if *word != "" {
