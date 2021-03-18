@@ -78,9 +78,7 @@ func main() {
 				panic(err)
 			}
 		}
-	} 
-	if *word == "" {
+	} else {
 		flag.Usage()
-	}
-	
+	}	
 }
