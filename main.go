@@ -4,63 +4,78 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"unicode"
 	"flag"
+	"io/ioutil"
 )
 
 var arr []string
 
-func permute(i int, word string, temp string) {
-	if i >= len(word) {
-		arr = append(arr, temp)
-		return
-	}
-
-	c := word[i]
-	if !unicode.IsLetter(rune(c)) {
-		permute(i+1, word, temp+string(c))
-	}
-
-	if unicode.IsUpper(rune(c)) {
-		permute(i+1, word, temp+string(c))
-		c := unicode.ToLower(rune(c))
-		permute(i+1, word, temp+string(c))
-	} else {
-		permute(i+1, word, temp+string(c))
-		c := unicode.ToUpper(rune(c))
-		permute(i+1, word, temp+string(c))
-	}
-}
-
-func simnum(word string) {
-	word = strings.Replace(word, "o", "0", -1)
-	word = strings.Replace(word, "l", "1", -1)
-	word = strings.Replace(word, "e", "3", -1)
-	word = strings.Replace(word, "a", "4", -1)
-	word = strings.Replace(word, "s", "5", -1)
-	word = strings.Replace(word, "t", "7", -1)
-	arr = append(arr, word)
-}
-
-func addnum() {
-	var temp []string
-	for i := 0; i < len(arr); i++ {
-		temp = append(temp, arr[i]+fmt.Sprint("1"), arr[i]+"12", arr[i]+"123", arr[i]+"1234", arr[i]+"12345")
-		for j := 2000; j <= 2021; j++ {
-			temp = append(temp, arr[i]+fmt.Sprint(j))
+func permute(clist[] string) []string{
+	var temp[] string
+	sym := [5]string{"","@",".","_","-"}
+	for _,i := range arr {
+		for _,j := range clist {
+			for _,k := range sym {
+				if i != "" && j != "" {
+					temp = append(temp,j+k+i,i+k+j)
+				}
+			}
 		}
 	}
-	arr = append(arr, temp...)
+	return temp
+}
+
+func addnum(a []string) []string{
+	var temp []string
+	sym := [5]string{"","@",".","_","-"}
+	for _,i := range a {
+		for _, k := range sym {
+			temp = append(temp, i+k+"1", i+k+"12", i+k+"123", i+k+"1234", i+k+"12345")
+			for j := 2000; j <= 2021; j++ {
+				temp = append(temp, i+k+fmt.Sprint(j))
+			}
+		}
+	}
+	return temp
 }
 
 func main() {
-	word := flag.String("w", "", "word (required)")
+	word := flag.String("w", "", "Enter your word")
+	minlen := flag.Int("l",6,"min length of password (default: 6)")
+	cc := flag.String("cc","","camelCase verison of company (default: camelCase on the middle character eg: comPany)")
 	flag.Parse()
 
 	if *word != "" {
-		permute(0, *word, "") // 2^n words
-		simnum(*word)         // 1 word
-		addnum()             // 27*(2^n+1) words
+		arr = append(arr, *word)
+		a := string((*word)[0])
+		arr = append(arr, strings.ToUpper(a)+(*word)[1:])
+		arr = append(arr, strings.ToUpper(*word))
+
+		if *cc == "" {
+			b := string((*word)[len(*word)/2])
+			arr = append(arr, (*word)[:len(*word)/2]+strings.ToUpper(b)+(*word)[len(*word)/2+1:])
+		} else {
+			arr = append(arr, *cc) // 4 added
+		}
+
+		common, err := os.Open("common.txt")
+		if err != nil {
+			panic(err)
+		}
+		defer common.Close()
+
+		c, err := ioutil.ReadAll(common)
+		clist := strings.Split(strings.ReplaceAll(string(c),"\r\n","\n"),"\n")
+
+		temp := permute(clist) 
+
+		arr = append(arr,temp...) // 12*5*4*2 added
+
+		arr = append(arr, clist...) // 12 added
+
+		temp = addnum(arr)
+
+		arr = append(arr,temp...) // total*5*27 added (approx. 66960)
 
 		file, err := os.Create(*word + ".txt")
 		if err != nil {
@@ -72,13 +87,16 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
+		defer wfile.Close()
 
 		for i := range arr {
-			if _, err := wfile.WriteString(arr[i] + "\n"); err != nil {
-				panic(err)
+			if len(arr[i]) >= *minlen {
+				if _, err := wfile.WriteString(arr[i] + "\n"); err != nil {
+					panic(err)
+				}
 			}
 		}
 	} else {
 		flag.Usage()
-	}	
+	}
 }

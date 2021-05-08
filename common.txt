@@ -1,0 +1,12 @@
+admin
+Admin
+ADMIN
+administrator
+Administrator
+ADMINISTRATOR
+dev
+Dev
+DEV
+password
+Password
+PASSWORD
