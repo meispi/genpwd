@@ -6,6 +6,7 @@ import (
 	"strings"
 	"flag"
 	"io/ioutil"
+	"path/filepath"
 )
 
 var arr []string
@@ -41,7 +42,8 @@ func addnum(a []string) []string{
 
 func main() {
 	word := flag.String("w", "", "Enter your word")
-	minlen := flag.Int("l",6,"min length of password (default: 6)")
+	wlist := flag.String("cl", "","custom list for combination")
+	minlen := flag.Int("l",6,"min length of password")
 	cc := flag.String("cc","","camelCase verison of company (default: camelCase on the middle character eg: comPany)")
 	flag.Parse()
 
@@ -58,11 +60,22 @@ func main() {
 			arr = append(arr, *cc) // 4 added
 		}
 
-		common, err := os.Open("common.txt")
-		if err != nil {
-			panic(err)
-		}
-		defer common.Close()
+		var common *os.File
+		if *wlist != "" {
+			wl1, err := os.Open(*wlist)
+			if err != nil {
+				cwd, err := os.Getwd()
+				wl2, err := os.Open(filepath.Join(cwd,*wlist))
+				if err != nil {
+					panic(err)
+				} else {
+					common = wl2
+				}
+				defer wl2.Close()
+			} else {
+				common = wl1
+			}
+			defer wl1.Close()
 
 		c, err := ioutil.ReadAll(common)
 		clist := strings.Split(strings.ReplaceAll(string(c),"\r\n","\n"),"\n")
@@ -72,8 +85,17 @@ func main() {
 		arr = append(arr,temp...) // 12*5*4*2 added
 
 		arr = append(arr, clist...) // 12 added
+		} else {
+			
+			clist := []string{"admin","Admin","ADMIN","administrator","Administrator","ADMINISTRATOR","dev","Dev","DEV","password","Password","PASSWORD"}
+			temp := permute(clist)
+			
+			arr = append(arr,temp...) // 12*5*4*2 added
+			
+			arr = append(arr, clist...) // 12 added
+		}
 
-		temp = addnum(arr)
+		temp := addnum(arr)
 
 		arr = append(arr,temp...) // total*5*27 added (approx. 66960)
 
