@@ -2,7 +2,7 @@
 A CLI tool to print alot of possible combinations (approx 67k using default list) of passwords with words like `dev`, `admin` and some special characters that could've been used by the developer as the password of an admin panel. You can use your own custom list using `-cl` flag to get a list of possible passwords, but make sure that your custom list is not too big (mine is only of 12 words and makes a list of 67k possible passwords) otherwise you may run out of storage.
 
 ## How to use
-```Usage of D:\Go\bin\pwd.exe:
+```Usage of D:\Go\bin\genpwd.exe:
   -cc string
         camelCase verison of company (default: camelCase on the middle character eg: comPany)
   -cl string
@@ -12,7 +12,7 @@ A CLI tool to print alot of possible combinations (approx 67k using default list
   -w string
         Enter your word
 ```
-e.g.: `pwd -w meispi` will make a list named meispi.txt containing possible password combinations
+e.g.: `genpwd -w meispi` will make a list named meispi.txt containing possible password combinations
 
 Default list of words:
 ```
