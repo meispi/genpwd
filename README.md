@@ -3,7 +3,7 @@ A CLI tool to print alot of possible combinations (approx 67k using default list
 
 ## Installation
 ```
-go get -u github.com/meispi/genpwd
+$ go get -u github.com/meispi/genpwd
 ```
 
 ## How to use
