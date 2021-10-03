@@ -44,20 +44,17 @@ func main() {
 	word := flag.String("w", "", "Enter your word")
 	wlist := flag.String("cl", "","custom list for combination")
 	minlen := flag.Int("l",6,"min length of password")
-	cc := flag.String("cc","","camelCase verison of company (default: camelCase on the middle character eg: comPany)")
+	cc := flag.String("cc","","camelCase verison of company (default: none)")
 	flag.Parse()
 
 	if *word != "" {
 		arr = append(arr, *word)
 		a := string((*word)[0])
 		arr = append(arr, strings.ToUpper(a)+(*word)[1:])
-		arr = append(arr, strings.ToUpper(*word))
+		arr = append(arr, strings.ToUpper(*word)) // 3 added
 
-		if *cc == "" {
-			b := string((*word)[len(*word)/2])
-			arr = append(arr, (*word)[:len(*word)/2]+strings.ToUpper(b)+(*word)[len(*word)/2+1:])
-		} else {
-			arr = append(arr, *cc) // 4 added
+		if *cc != "" {
+			arr = append(arr,*cc) // 1 added
 		}
 
 		var common *os.File
@@ -84,7 +81,7 @@ func main() {
 
 		arr = append(arr,temp...) // 12*5*4*2 added
 
-		arr = append(arr, clist...) // 12 added
+		// arr = append(arr, clist...) // 12 added
 		} else {
 			
 			clist := []string{"admin","Admin","ADMIN","administrator","Administrator","ADMINISTRATOR","dev","Dev","DEV","password","Password","PASSWORD"}
@@ -92,7 +89,7 @@ func main() {
 			
 			arr = append(arr,temp...) // 12*5*4*2 added
 			
-			arr = append(arr, clist...) // 12 added
+			// arr = append(arr, clist...) // 12 added
 		}
 
 		temp := addnum(arr)
