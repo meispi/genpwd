@@ -1,5 +1,5 @@
 # genpwd
-A CLI tool to print alot of possible combinations (approx 67k using default list) of passwords with words like `dev`, `admin` and some special characters that could've been used by the developer as the password of an admin panel. You can use your own custom list using `-cl` flag to get a list of possible passwords, but make sure that your custom list is not too big (mine is only of 12 words and makes a list of 49k possible passwords) otherwise you may run out of storage.
+A CLI tool to print alot of possible combinations (approx 49k using default list) of passwords with words like `dev`, `admin` and some special characters that could've been used by the developer as the password of an admin panel. You can use your own custom list using `-cl` flag to get a list of possible passwords, but make sure that your custom list is not too big (mine is only of 12 words and makes a list of 49k possible passwords) otherwise you may run out of storage.
 
 ## Installation
 ```
